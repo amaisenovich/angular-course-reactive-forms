@@ -1,0 +1,147 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <!--
+          Create a Form with the following Controls and Validators
+          1) Project Name (should not be empty)
+          2) Mail (should not be a empty and a valid email)
+          3) Project Status Dropdown, with three values: 'Stable', 'Critical', 'Finished'
+          4) Submit Button
+
+          Add your own Validator which doesn't allow "Test" as a Project Name
+
+          Also implement that Validator as an async Validator (replace the other one)
+
+          Upon submitting the form, simply print the value to the console
+      -->
+
+      <form
+        [formGroup]="projectForm"
+        (ngSubmit)="onSubmit()"
+      >
+        <fieldset [disabled]="submitted">
+          <div class="form-group">
+            <label [for]="ProjectFormControl.NAME">
+              Project Name
+            </label>
+            <input
+              [id]="ProjectFormControl.NAME"
+              type="text"
+              class="form-control"
+              [formControlName]="ProjectFormControl.NAME"
+            >
+            <div
+              *ngIf="showErrors(ProjectFormControl.NAME) || isNameBusy()"
+              class="alert alert-danger"
+              role="alert"
+            >
+              {{getNameErrorMessage()}}
+            </div>
+            <div
+              *ngIf="!showPending(ProjectFormControl.NAME) && !getNameErrorMessage() && !!projectForm.value[ProjectFormControl.NAME]"
+              class="alert alert-success"
+              role="alert"
+            >
+              Project name is availiable!
+            </div>
+            <div
+              *ngIf="showPending(ProjectFormControl.NAME)"
+              class="alert alert-info"
+              role="alert"
+            >
+              Checking if this project name is availiable ...
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label [for]="ProjectFormControl.EMAIL">
+              Manager Email
+            </label>
+            <input
+              [id]="ProjectFormControl.EMAIL"
+              type="text"
+              class="form-control"
+              [formControlName]="ProjectFormControl.EMAIL"
+            >
+            <div
+              *ngIf="showErrors(ProjectFormControl.EMAIL)"
+              class="alert alert-danger"
+              role="alert"
+            >
+              Manager email should be a vaild email address.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label [for]="ProjectFormControl.STATUS">
+              Project Status
+            </label>
+            <select
+              [id]="ProjectFormControl.STATUS"
+              class="form-control"
+              [formControlName]="ProjectFormControl.STATUS"
+            >
+              <option
+                *ngFor="let status of statusOptions"
+                [value]="status"
+              >
+                {{status}}
+              </option>
+            </select>
+            <div
+              *ngIf="showErrors(ProjectFormControl.STATUS)"
+              class="alert alert-danger"
+              role="alert"
+            >
+              Project status cannot be empty!
+            </div>
+          </div>
+
+          <div
+            *ngIf="showFormErrors()"
+            class="alert alert-danger"
+            role="alert"
+          >
+            Some fields above has errors. Please, check the data that you've entered!
+          </div>
+
+          <div class="form-group">
+            <button
+              type="submit"
+              class="btn btn-success"
+              [disabled]="!projectForm.valid"
+            >
+              Save
+            </button>
+          </div>
+
+        </fieldset>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="submitted">
+    <hr>
+
+    <div class="row">
+      <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+        <h3>Submitted Values:</h3>
+        <p>
+          Name: {{projectForm.value[ProjectFormControl.NAME]}}
+        </p>
+        <p>
+          Email: {{projectForm.value[ProjectFormControl.EMAIL]}}
+        </p>
+        <p>
+          Status: {{projectForm.value[ProjectFormControl.STATUS]}}
+        </p>
+        <button
+          class="btn btn-primary"
+          (click)="onReset()"
+        >
+          Reset
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
